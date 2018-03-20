@@ -32,7 +32,7 @@ export const firebaseConfig = {
 ```
 ionic serve
 ```
-4. Since this demo app doesnt handle authentication, we will need to disable authentication from the Firebase console. After selecting Database, select the Rules tab, and modify the rules
+4. Since this demo app doesnt handle authentication, we will need to disable authentication from the Firebase console. After selecting Database, select the Rules tab, and modify the rules. Do the same for storage as well.
 ```
 {
   "rules": {
