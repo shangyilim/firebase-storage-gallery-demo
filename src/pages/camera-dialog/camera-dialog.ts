@@ -20,7 +20,7 @@ export class CameraDialogPage {
 
   imageCapture: any;
   hideVideo = false;
-  cameras=[];
+  cameras = [];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public viewController: ViewController) {
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -32,24 +32,24 @@ export class CameraDialogPage {
       })
       .catch(error => console.error('getUserMedia() error:', error));
 
-        navigator.mediaDevices.enumerateDevices().then(all => {
-      this.cameras = all.filter(c=> c.kind ==='videoinput');
+    navigator.mediaDevices.enumerateDevices().then(all => {
+      this.cameras = [all.find(c => c.kind === 'videoinput')];
     })
   }
 
   test() {
-     this.hideVideo = true;
+    this.hideVideo = true;
     this.imageCapture.grabFrame()
       .then(imageBitmap => {
         this.canvas.nativeElement.width = imageBitmap.width;
         this.canvas.nativeElement.height = imageBitmap.height;
         this.canvas.nativeElement.getContext('2d').drawImage(imageBitmap, 0, 0);
-       
+
       })
       .catch(error => console.log(error));
   }
 
-  submit(){
+  submit() {
     const dataurl = this.canvas.nativeElement.toDataURL();
     this.viewController.dismiss(dataurl);
   }
@@ -58,10 +58,10 @@ export class CameraDialogPage {
     console.log('ionViewDidLoad CameraDialogPage');
   }
 
-  switch(cam){
+  switch(cam) {
     var constraints = {
-    video: {deviceId:  cam.deviceId }
-  };
+      video: { deviceId: cam.deviceId }
+    };
 
     navigator.mediaDevices.getUserMedia(constraints)
       .then((mediaStream) => {
@@ -73,6 +73,6 @@ export class CameraDialogPage {
       .catch(error => console.error('getUserMedia() error:', error));
 
   }
- 
+
 
 }

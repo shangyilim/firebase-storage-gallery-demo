@@ -1,7 +1,21 @@
 page-home {
-    .chat-container{
-        display:grid;
-        grid-template-rows: auto 100px;
-        grid-template-columns: 100%;
+    .gallery-container {
+        display:flex;
+        flex-wrap: wrap;
+        flex-direction:row;
+
+    }
+    .image {
+        background-repeat:no-repeat;
+        background-size:cover;
+        width:calc(100vw / 3  - 30px) ;
+        height:calc(100vw / 3  - 30px) ;
+        margin: 5px;
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+    .image-spinner > svg *{
+        stroke: white;
     }
 }

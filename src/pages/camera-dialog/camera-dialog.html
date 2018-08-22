@@ -15,12 +15,11 @@
 
 <ion-content padding>
   <video #video style="width:100%; height:100%" autoplay [hidden]="hideVideo"></video>
-  <canvas *ngIf="hideVideo" #canvas style="width:100%;height:100%"></canvas>
+  <canvas *ngIf="hideVideo" #canvas style="width:100%;"></canvas>
 
 </ion-content>
 <ion-footer>
 
-  <button ion-button tappable (click)="switch(cam)" *ngFor="let cam of cameras; let i = index;">Use Camera {{i+1}}</button>
   <button ion-button tappable (click)="test()" [hidden]="hideVideo">Capture</button>
 
   <button ion-button tappable (click)="hideVideo = false" [hidden]="!hideVideo">Retake</button>

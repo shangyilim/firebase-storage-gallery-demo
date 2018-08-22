@@ -7,9 +7,13 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-item *ngFor="let file of items">
-      <img [src]="file.downloadUrl |async " style="width:100%;height:100%"/>
-    </ion-item>
+  <div class="gallery-container">
+    <a [href]="file.offline ? file.data : file.path" target="_blank" *ngFor="let file of items | async">
+      <div class="image" [ngStyle]="{'background-image':'url('+(file.offline ? file.data : file.thumbnail) +')'}"  >
+          <ion-spinner class="image-spinner"  *ngIf="file.offline"></ion-spinner>
+      </div>
+    </a>
+  </div>
 </ion-content>
 
 <ion-footer>

@@ -7,7 +7,7 @@ import * as firebase from 'firebase';
 import { CameraDialogPage } from '../camera-dialog/camera-dialog';
 
 import { Observable } from 'rxjs/Observable';
-
+import uuidv4 from 'uuid/v4';
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -15,73 +15,56 @@ import { Observable } from 'rxjs/Observable';
 export class HomePage {
 
 
-  items = [];
+  items: Observable<any[]>;
   constructor(public navCtrl: NavController, private camera: Camera, public storage: AngularFireStorage,
     private database: AngularFireDatabase,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     public modalCtrl: ModalController) {
 
-this.database.database.ref('images').on('child_added', (data)=>{
-    const file = { ...data.val(), downloadUrl:''};
-    file.downloadUrl =  this.storage.ref(file.url).getDownloadURL();
+    this.items = this.database.list('images',ref=> ref.orderByChild('timestamp')).valueChanges();
 
-    this.items.push(file);
-})
-    // this.items = this.database.list('images').valueChanges();
-
-    // this.items.subscribe(s=> {
-    //   s.forEach(i => {
-
-    //   this.storage.ref(i.url).getDownloadURL().subscribe(test => {
-    //     console.log(test);
-    //     i.downloadUrl = test;
-    //   });
-    //   })
-    // });
-
-    
   }
 
   takeAnother() {
     let modal = this.modalCtrl.create(CameraDialogPage);
     modal.onDidDismiss(data => {
-      this.upload(data);
+      if (data) {
+        this.upload(data);
+      }
     })
     modal.present();
   }
 
   upload(data) {
-    let loader = this.loadingCtrl.create({
-      content: "Uploading ...",
-    });
-    loader.present();
     const filename = Math.floor(Date.now() / 1000);
     let storageRef = this.storage.ref(`images/${filename}.jpg`);
+    const id = uuidv4();
 
-
-    storageRef.putString(data, firebase.storage.StringFormat.DATA_URL)
-      .then(snapshot => {
-        return this.database.database.ref('images').push({ url: `images/${filename}.jpg` });
+    this.database.database.ref(`images/${id}`)
+      .set({
+        offline: true,
+        data,
+        timestamp: (new Date()).getTime(),
       })
-      .then((snapshot) => {
-        loader.dismiss();
-        let toast = this.toastCtrl.create({
-          message: 'Uploaded successfully',
-          duration: 3000
+      .then(() => {
+        storageRef.putString(data, firebase.storage.StringFormat.DATA_URL, {
+          customMetadata: {
+            id
+          }
         });
-        toast.present();
       });
+
   }
-  
-  download(file){
-    if(file.downloading){
+
+  download(file) {
+    if (file.downloading) {
       return;
     }
     console.log(file);
     file.downloading = true;
-    return this.storage.storage.ref().child(file.url+'').getDownloadURL();
-    
+    return this.storage.storage.ref().child(file.url + '').getDownloadURL();
+
   }
 
 
